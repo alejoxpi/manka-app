@@ -1,0 +1,40 @@
+---
+Metadata:
+  TemplateId: "arn:aws:cloudformation:us-east-1:995063042269:generatedTemplate/d77fcbec-1cff-4f89-900a-56ed168eec7f"
+Resources:
+
+  ApiGatewayDeployment:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ApiGateway::Deployment"
+    DeletionPolicy: "Retain"
+    Properties:
+      RestApiId:
+        Ref: "ApiGatewayRestApi01"
+
+  ApiGatewayRestApi01:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ApiGateway::RestApi"
+    DeletionPolicy: "Retain"
+    Properties:
+      ApiKeySourceType: "HEADER"
+      EndpointConfiguration:
+        Types:
+        - "REGIONAL"
+      DisableExecuteApiEndpoint: false
+      Name: "manka-api"
+
+  ApiGatewayStage:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ApiGateway::Stage"
+    DeletionPolicy: "Retain"
+    Properties:
+      RestApiId:
+        Ref: "ApiGatewayRestApi01"
+      DeploymentId:
+        Fn::GetAtt:
+        - "ApiGatewayDeployment"
+        - "DeploymentId"
+      StageName: "dev"
+      CacheClusterSize: "0.5"
+      TracingEnabled: false
+      CacheClusterEnabled: false
